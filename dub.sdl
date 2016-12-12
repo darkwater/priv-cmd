@@ -1,0 +1,5 @@
+name "priv-cmd"
+description "Run shell commands"
+copyright "Copyright © 2016, Darkwater"
+authors "Darkwater"
+dependency "tinyredis" version="~>2.1.0"
