@@ -2,3 +2,4 @@
 *.o
 *.obj
 priv-cmd
+tags
