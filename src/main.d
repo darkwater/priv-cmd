@@ -57,6 +57,16 @@ void addLocalBookmark(string command) {
     redisMaster.send("SADD", "commands:" ~ envName, command);
 }
 
+void makeLocalBookmark(string command) {
+    redisMaster.send("SREM", "commands", command);
+    redisMaster.send("SADD", "commands:" ~ envName, command);
+}
+
+void makeGlobalBookmark(string command) {
+    redisMaster.send("SREM", "commands:" ~ envName, command);
+    redisMaster.send("SADD", "commands", command);
+}
+
 void showCommandMenu() {
     auto commands = redisLocal.send("SUNION", "commands", "commands:" ~ envName).values;
     commands.randomShuffle();
@@ -82,6 +92,12 @@ void showCommandMenu() {
 
                 case "--add-local":
                 case "-al": addLocalBookmark(cmdTarget); break;
+
+                case "--make-local":
+                case "-ml":  makeLocalBookmark(cmdTarget);   break;
+
+                case "--make-global":
+                case "-mg":  makeGlobalBookmark(cmdTarget);   break;
 
                 default: break;
             }
