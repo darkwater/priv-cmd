@@ -25,32 +25,11 @@ struct PrivCmdOptions {
     }
 }
 
-GetoptResult helpInfo;
-PrivCmdOptions options;
-
 string username;
 string envName;
 
 Redis redisMaster;
 Redis redisLocal;
-
-void usage() {
-    writeln("priv-cmd v0.1.0");
-    writeln("");
-    writeln("Options:");
-
-    ulong longestShortOptLength = helpInfo.options.map!( opt => opt.optShort.length )
-        .reduce!((a, b) => max(a, b));
-    ulong longestLongOptLength  = helpInfo.options.map!( opt => opt.optLong.length  )
-        .reduce!((a, b) => max(a, b));
-
-    foreach (it; helpInfo.options) {
-        writefln("  %*s %*-s %s",
-                longestShortOptLength,    it.optShort,
-                longestLongOptLength + 2, it.optLong,
-                it.help);
-    }
-}
 
 // Example hosts entry: 172.24.0.1  priv-dark-desktop  priv-dark-local
 string getEnvName() {
@@ -117,24 +96,6 @@ void showCommandMenu() {
 }
 
 int main(string[] args) {
-    helpInfo = getopt(args,
-            std.getopt.config.caseSensitive,
-            "a|add",    "Bookmark a command", &options.add,
-            "al|add",   "Bookmark a command locally", &options.add,
-            "r|remove", "Remove a bookmark",  &options.remove);
-
-    if (helpInfo.helpWanted) {
-        usage();
-        return 0;
-    }
-
-    string message;
-    if (!options.validate(message)) {
-        writeln(message);
-        usage();
-        return 1;
-    }
-
     username = environment["USER"];
     envName = getEnvName();
 
